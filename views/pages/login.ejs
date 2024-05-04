@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+
+    main {
+      margin-top: 0;
+    }
+  </style>
+  <title>Login Page | SaleForge</title>
+</head>
+
+<body>
+  <main id="main">
+    <form method="post" action="/login" class="loginForm" id="loginForm">
+      <% if (messages.error) {%>
+      <div class="errDiv">
+        <p>
+          <%= messages.error %>
+        </p>
+      </div>
+      <%}%>
+          <% if (messages.success) {%>
+      <div class="successDiv">
+        <p>
+          <%= messages.success %>
+        </p>
+      </div>
+      <%}%>
+      <h1 style="margin: 0;">Welcome back!</h1>
+      <p>Log into your account!</p>
+      <div class="formcheck">
+        <label for="email"> Email </label>
+        <input type="email" id="email" name="email" aria-placeholder="e.g., john.doe@gmail.com" required
+          aria-label="Email Address" placeholder="e.g., john.doe@gmail.com" />
+      </div>
+      <div class="formcheck">
+        <label for="password"> Password </label>
+        <input type="password" id="password" name="password" aria-placeholder="Enter Password"
+          autocomplete="new-password" aria-label="Password" placeholder="Enter Password" required />
+      </div>
+      <div style="margin-bottom: 1rem">
+        <input type="checkbox" id="togglePassword" style="cursor: pointer;" />
+        <label for="togglePassword">Show Password</label>
+      </div>
+      <div class="formLinks">
+        <button type="submit" id="loginFormButton" aria-label="Login Button">
+          LOGIN
+        </button>
+        <p>Don't have an account? <a href="/signUp" aria-label="Rgistration Link">Register</a></p>
+      </div>
+    </form>
+  </main>
+  <script src="js/togglePassword.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      function displayError(errorMessage, parentElement) {
+        const errDiv = document.createElement("div");
+        errDiv.innerHTML = `
+      <div class="errDiv">
+        <p>${errorMessage}</p>
+      </div>`;
+        parentElement.appendChild(errDiv); // Append errDiv to the parentElement first
+        errDiv.scrollIntoView({
+          behavior: "smooth"
+        }); // Now scrollIntoView will work
+
+        setTimeout(() => {
+          errDiv.style.opacity = "0";
+          errDiv.style.transition = "all 1s ease-in-out";
+          setTimeout(() => {
+            errDiv.remove();
+          }, 1000);
+        }, 5000);
+      }
+      const submitButton = document.getElementById('loginFormButton');
+      const loginForm = document.getElementById('loginForm');
+      const main= document.getElementById('main');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const loadingDiv = document.createElement("div")
+
+      loadingDiv.innerHTML = `
+      <div class="loading">
+        <span class="spinner"></span>
+        Signing In...
+      </div>`
+      function disableButton() {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Signing In...';
+      }
+
+      function enableButton() {
+        submitButton.disabled = false;
+        submitButton.textContent = 'LOGIN';
+      }
+
+      loginForm.addEventListener('submit', function (event) {
+        disableButton();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Validate email
+        if (!emailPattern.test(email)) {
+          event.preventDefault();
+          displayError('Please enter a valid email address.', loginForm);
+          enableButton()
+          document.getElementById('email').style.border = "2px solid red"
+          return;
+        } else {
+          document.getElementById('email').style.border = "2px solid green"
+        }
+
+        if (password === "") {
+          event.preventDefault();
+          displayError('Please enter your password.', loginForm);
+          enableButton();
+          document.getElementById('password').style.border = "2px solid red"
+          return;
+        } else {
+          document.getElementById('password').style.border = "2px solid green"
+        }
+
+        main.appendChild(loadingDiv)
+      })
+    })
+  </script>
+</body>
+
+<footer>
+  <%- include('../partials/footer')%>
+      </footer>
+
+</html>

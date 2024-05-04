@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+    }
+
+    main {
+      margin-top: 0;
+    }
+  </style>
+  <title>Sign Up | SaleForge</title>
+</head>
+
+<body>
+  <main id="main">
+    <form method="post" action="/register" class="registerForm" id="registerForm">
+      <% if (messages.error) {%>
+      <div class="errDiv">
+        <p>
+          <%= messages.error %>
+        </p>
+      </div>
+      <%}%>
+          <% if (messages.success) {%>
+      <div class="successDiv">
+        <p>
+          <%= messages.success %>
+        </p>
+      </div>
+      <%}%>
+              <h1 style="margin: 0;">Welcome! Let's get started.</h1>
+              <p style="margin: 0;">Fill in your details below</p>
+              <div class="formcheck">
+                <label for="name"> Full Name </label>
+                <input type="text" id="name" autocomplete="name" aria-placeholder="Enter Full Name" name="name"
+                  placeholder="e.g., John Doe" required aria-label="Full Name" />
+              </div>
+              <div class="formcheck">
+                <label for="email"> Email </label>
+                <input type="email" id="email" name="email" autocomplete="new-password"
+                  aria-placeholder="e.g., john.doe@gmail.com" required aria-label="Email Address"
+                  placeholder="e.g., john.doe@gmail.com" />
+              </div>
+              <div class="formcheck">
+                <label for="password"> Password </label>
+                <input type="password" id="password" name="password" aria-placeholder="Enter Password"
+                  autocomplete="new-password" required aria-label="Password" placeholder="Enter Password" />
+              </div>
+              <div class="formcheck">
+                <label for="confirmPassword"> Confirm Password </label>
+                <input type="password" id="confirmPassword" name="confirmPassword" aria-placeholder="Confirm Password"
+                  required aria-label="Confirm Password" placeholder="Confirm Password" />
+              </div>
+
+              <div style="margin-bottom: 1rem">
+                <input type="checkbox" id="togglePassword" />
+                <label for="togglePassword">Show Password</label>
+              </div>
+              <div class="formLinks">
+                <button type="submit" id="formButton" aria-label="Register Button">
+                  REGISTER
+                </button>
+                <p>Already have an account? <a href="/login" aria-label="Login Link">Login</a></p>
+              </div>
+    </form>
+  </main>
+  <script src="js/togglePassword.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      function displayError(errorMessage, parentElement) {
+        const errDiv = document.createElement("div");
+        errDiv.innerHTML = `
+          <div class="errDiv">
+            <p>${errorMessage}</p>
+          </div>`;
+        parentElement.appendChild(errDiv); // Append errDiv to the parentElement first
+        errDiv.scrollIntoView({ behavior: "smooth" }); // Now scrollIntoView will work
+
+        setTimeout(() => {
+          errDiv.style.opacity = "0";
+          errDiv.style.transition = "all 1s ease-in-out";
+          setTimeout(() => {
+            errDiv.remove();
+          }, 1000);
+        }, 5000);
+      }
+      const main = document.getElementById('main');
+      const submitButton = document.getElementById('formButton');
+      const registerForm = document.getElementById('registerForm');
+      const loadingDiv = document.createElement("div")
+      const namePattern = /^[a-zA-Z\s]+$/;
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])^/;
+      const minPassLength = 8;
+      loadingDiv.innerHTML = `
+      <div class="loading">
+        <span class="spinner"></span>
+        Creating Account..
+      </div>`
+
+      function disableButton() {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Just a sec...';
+      }
+
+      function enableButton() {
+        submitButton.disabled = false;
+        submitButton.textContent = 'REGISTER';
+      }
+
+      registerForm.addEventListener('submit', function (event) {
+        disableButton();
+        const username = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        // Validate name
+        if (!namePattern.test(username)) {
+          event.preventDefault();
+          displayError('Name should only contain letters and spaces.', registerForm);
+          enableButton()
+          document.getElementById('name').style.border = "2px solid red"
+          return;
+        } else {
+          document.getElementById('name').style.border = "2px solid green"
+        }
+
+        // Validate email
+        if (!emailPattern.test(email)) {
+          event.preventDefault();
+          displayError('Please enter a valid email address.', registerForm);
+          enableButton()
+          document.getElementById('email').style.border = "2px solid red"
+          return;
+        } else {
+          document.getElementById('email').style.border = "2px solid green"
+        }
+
+        if (password.length < minPassLength) {
+          event.preventDefault();
+          displayError('Password should be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.', registerForm)
+          enableButton();
+          document.getElementById('password').style.border = "2px solid red"
+          document.getElementById('confirmPassword').style.border = "2px solid red"
+          return;
+        } else {
+          document.getElementById('password').style.border = "2px solid green"
+          document.getElementById('confirmPassword').style.border = "2px solid green"
+        }
+
+        // Validate password
+        if (password !== confirmPassword) {
+          event.preventDefault();
+          displayError('Passwords do not match.', registerForm)
+          enableButton();
+          document.getElementById('password').style.border = "2px solid red"
+          document.getElementById('confirmPassword').style.border = "2px solid red"
+          return;
+        } else {
+          document.getElementById('password').style.border = "2px solid green"
+          document.getElementById('confirmPassword').style.border = "2px solid green"
+        }
+
+        main.appendChild(loadingDiv)
+      })
+    })
+  </script>
+
+</body>
+
+<footer>
+  <%- include('../partials/footer')%>
+      </footer>
+
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="widtd=device-widtd, initial-scale=1.0" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    main {
+      min-height: calc(100vh - 10rem);
+      text-align: center;
+    }
+
+    a {
+      color: var(--main-text);
+    }
+
+    .functions {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: space-evenly;
+      position: sticky;
+      margin: 1rem auto;
+      bottom: 3.2rem;
+    }
+
+    footer {
+      position: fixed;
+    }
+  </style>
+  <title>Sales | SaleForge</title>
+</head>
+
+<body>
+  <header id="header">
+    <%- include('../partials/header')%>
+  </header>
+
+  <main id="main">
+    <div class="user">
+      <h4>Welcome, <%= username %></h4>
+    </div>
+    <% if (messages.error) { %>
+    <div class="errDiv" id="error">
+      <button type="button" id="closeEntryForm" class="closeButton">
+        &times;
+      </button>
+      <p style="text-align: center;">
+        <%= messages.error %>
+      </p>
+    </div>
+    <% } %>
+    <% if (messages.success) { %>
+    <div class="successDiv" id="success">
+      <button type="button" id="closeEntryForm" class="closeButton">
+        &times;
+      </button>
+      <p style="text-align: center;">
+        <%= messages.success %>
+      </p>
+    </div>
+    <% } %>
+    <% if (sales.length === 0) { %>
+    <p>You don't have any sale records for <span style="font-weight: bold;"> "<%= business%>"!</span></p>
+    <p>Start recording sales now!</p><br>
+    <button class="addSale" id="addSale">ADD SALE</button>
+    <% } else { %>
+    <p>Here are your latest records for <span style="font-weight: bold;"> "<%= business%>"!</span></p>
+    <table id="salesTable">
+      <tr>
+        <th>Entry</th>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+      <% sales.forEach((sale, index) => { %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= sale.product %></td>
+        <td><%= sale.quantity %></td>
+        <td><%= sale.price %></td>
+      </tr>
+      <% }) %>
+    </table>
+    <a href="/search">View more records here</a>
+    <br>
+    <% } %>
+
+    <form id="entryForm" class="entryForm" method="post" action="/addSale">
+      <button type="button" id="closeEntryForm" class="closeButton">
+        &times;
+      </button>
+      <input type="text" placeholder="Item Name" id="item" name="itemName" required />
+      <input type="number" placeholder="Quantity" id="quantity" name="itemQuantity" required />
+      <input type="number" placeholder="Total Price" id="price" name="itemPrice" required />
+      <input type="date" min="2024-01-01" name="saleDate" id="date" max="<%= new Date().toISOString().split('T')[0] %>" value="<%= new Date().toISOString().split('T')[0] %>" required />
+      <button type="submit" class="addSale" id="submitButton">Record</button>
+    </form>
+
+    <form class="deleteForm" id="deleteForm" method="post" action="/deleteSale">
+      <button type="button" id="closeButton" class="closeButton">&times;
+      </button>
+      <label for="productToDelete">Enter name of sale to Delete:</label>
+      <input type="text" placeholder="e.g., Sugar" aria-details="Enter sale name as it appears in the table" id="productToDelete" name="productToDelete" />
+      <button type="submit" id="deleteFormButton" class="deleteSale">DELETE</button>
+    </form>
+
+    <div class="functions">
+      <button class="addSale" id="addSale">ADD SALE</button>
+      <button class="deleteSale" id="deleteSale">DELETE SALE</button>
+    </div>
+  </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const error = document.getElementById('error');
+      const success = document.getElementById('success');
+      const closeButton = document.getElementById('closeEntryForm');
+      if (closeButton) {
+        closeButton.addEventListener('click', function() {
+          // Find the parent element of the closeButton and remove it
+          const parentElement = this.parentNode;
+          parentElement.parentNode.removeChild(parentElement);
+        });
+      }
+
+      function dissapear(element) {
+        setTimeout(() => {
+          element.style.opacity = "0";
+          element.style.transition = "all 1s ease-in-out";
+          setTimeout(() => {
+            element.remove();
+          }, 1000);
+        }, 5000);
+      }
+
+      dissapear(success)
+      dissapear(error)
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const main = document.getElementById('main');
+      const entryForm = document.getElementById('entryForm');
+      const itemInput = document.getElementById('item');
+      const quantityInput = document.getElementById('quantity');
+      const priceInput = document.getElementById('price');
+      const dateInput = document.getElementById('date');
+      const submitButton = document.getElementById('submitButton');
+
+      function disableButton() {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Recording...';
+      }
+
+      function enableButton() {
+        submitButton.disabled = false;
+        submitButton.textContent = 'SEARCH';
+      }
+
+      // Function to display an error message
+      function displayError(errorMessage, parentElement) {
+        const errDiv = document.createElement("div");
+        errDiv.innerHTML = `
+        <div class="errDiv">
+          <p>${errorMessage}</p>
+        </div>`;
+        parentElement.appendChild(errDiv); // Append errDiv to the parentElement first
+        errDiv.scrollIntoView({
+          behavior: "smooth"
+        }); // Now scrollIntoView will work
+
+        setTimeout(() => {
+          errDiv.style.opacity = "0";
+          errDiv.style.transition = "all 1s ease-in-out";
+          setTimeout(() => {
+            errDiv.remove();
+          }, 1000);
+        }, 5000);
+      }
+
+      // Event listener for form submission
+      entryForm.addEventListener('submit', function(event) {
+        disableButton();
+
+        // Validate item name
+        if (itemInput.value.trim() === "") {
+          event.preventDefault(); // Prevent form submission
+          displayError('Please enter an item name.', entryForm); // Display error message in a div
+          itemInput.setAttribute('aria-invalid', 'true'); // Set aria-invalid to true
+          itemInput.style.border = "2px solid red"; // Mark the input with a red border
+          enableButton(); // Re-enable the submit button
+          return;
+        } else {
+          itemInput.setAttribute('aria-invalid', 'false'); // Set aria-invalid to false
+          itemInput.style.border = "2px solid green"; // Remove the red border if there's no error
+        }
+
+        // Validate quantity
+        if (quantityInput.value <= 0) {
+          event.preventDefault();
+          displayError('Quantity must be a positive number.', entryForm);
+          quantityInput.setAttribute('aria-invalid', 'true'); // Set aria-invalid to true
+          quantityInput.style.border = "2px solid red"
+          enableButton();
+          return;
+        } else {
+          quantityInput.setAttribute('aria-invalid', 'false'); // Set aria-invalid to false
+          quantityInput.style.border = "2px solid green"; // Remove the red border if there's no error
+        }
+
+        // Validate total price
+        if (priceInput.value <= 0) {
+          event.preventDefault();
+          displayError('Total price must be a positive number.', entryForm);
+          priceInput.setAttribute('aria-invalid', 'true'); // Set aria-invalid to true
+          priceInput.style.border = "2px solid red"
+          enableButton();
+          return;
+        } else {
+          priceInput.setAttribute('aria-invalid', 'false'); // Set aria-invalid to false
+          priceInput.style.border = "2px solid green"; // Remove the red border if there's no error
+        }
+        
+        let message = "Recording Sale.."
+        const loadingDiv = document.createElement("div");
+        loadingDiv.innerHTML = `
+        <div class="loading">
+          <span class="spinner"></span>
+          ${message}
+        </div>`;
+
+        main.appendChild(loadingDiv)
+      });
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      function displayError(errorMessage, parentElement) {
+        const errDiv = document.createElement("div");
+        errDiv.innerHTML = `
+        <div class="errDiv">
+          <p>${errorMessage}</p>
+        </div>`;
+        parentElement.appendChild(errDiv); // Append errDiv to the parentElement first
+        errDiv.scrollIntoView({
+          behavior: "smooth"
+        }); // Now scrollIntoView will work
+
+        setTimeout(() => {
+          errDiv.style.opacity = "0";
+          errDiv.style.transition = "all 1s ease-in-out";
+          setTimeout(() => {
+            errDiv.remove();
+          }, 1000);
+        }, 5000);
+      }
+      //sales forms
+      const addSaleButton = document.getElementById("addSale");
+      const deleteSaleButton = document.getElementById("deleteSale");
+      const main = document.getElementById("main");
+      const entryForm = document.getElementById("entryForm");
+      const deleteForm = document.getElementById("deleteForm");
+      const closeButton = document.getElementById("closeButton");
+      const closeEntryForm = document.getElementById("closeEntryForm");
+      const salesTable = document.getElementById("salesTable");
+      const deleteFormButton = document.getElementById("deleteFormButton");
+      const productToDelete = document.getElementById("productToDelete");
+
+      deleteFormButton.textContent = "DELETE"
+
+      addSaleButton.addEventListener("click", () => {
+        entryForm.classList.toggle("show");
+        //scrollinto view of loaded element
+        entryForm.scrollIntoView({
+          behavior: "smooth"
+        });
+      });
+
+      deleteSaleButton.addEventListener("click", () => {
+        deleteForm.classList.toggle("show");
+        //scrollinto view of loaded element
+        deleteForm.scrollIntoView({
+          behavior: "smooth"
+        });
+      });
+
+      closeEntryForm.addEventListener("click", () => {
+        salesTable.scrollIntoView({
+          behavior: "smooth"
+        });
+        entryForm.classList.toggle("show");
+      });
+
+      closeButton.addEventListener("click", () => {
+        salesTable.scrollIntoView({
+          behavior: "smooth"
+        });
+        deleteForm.classList.toggle("show");
+      });
+
+      deleteForm.addEventListener("submit", (event) => {
+        deleteFormButton.disabled = true
+        deleteFormButton.textContent = "Deleting..."
+        if (productToDelete.value === "") {
+          event.preventDefault()
+          displayError("Enter product name to delete", deleteForm)
+          productToDelete.style.border = "2px solid red"
+          deleteFormButton.disabled = false
+          deleteFormButton.textContent = "DELETE"
+        } else {
+          productToDelete.style.border = "2px solid green"
+        }
+        let message = "Deleting Sale.."
+        const loadingDiv = document.createElement("div");
+        loadingDiv.innerHTML = `
+        <div class="loading">
+          <span class="spinner"></span>
+          ${message}
+        </div>`;
+
+        main.appendChild(loadingDiv)
+      })
+    })
+  </script>
+  <script src="js/index.js"></script>
+
+</body>
+<footer>
+  <%- include('../partials/footer')%>
+</footer>
+
+</html>

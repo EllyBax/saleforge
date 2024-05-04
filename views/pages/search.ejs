@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      width: 100vw;
+    }
+
+    main {
+      max-width: 768px;
+      margin: 6rem auto 0;
+      padding: 0 1rem 1rem 1rem;
+      overflow-y: scroll;
+    }
+
+    form {
+      max-width: 300px;
+      margin: 1rem auto;
+      background: var(--main-bg);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="date"],
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: var(--second-bg);
+      color: var(--main-text);
+      border: 2px solid var(--clear-bg);
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: var(--third-bg);
+      color: var(--second-text);
+      transition: all 0.5s ease-in-out;
+      cursor: pointer;
+    }
+
+    button[type="submit"]:hover {
+      background: var(--second-bg);
+    }
+  </style>
+  <title>Search | SaleForge</title>
+</head>
+
+<body>
+  <header id="header"><%- include('../partials/header')%></header>
+  <main id="main">
+    <% if (messages.error) { %>
+    <div class="error" id="error">
+      <p style="text-align: center"><%= messages.error %></p>
+    </div>
+    <% } %>
+    <p style="text-align: center; margin: 1rem auto; font-weight: 600">
+      You can view your sales history here: <br />
+      You can now filter records by date, item or price
+    </p>
+    <form method="post" action="/search" id="searchForm">
+      <label for="date">Select a date:</label>
+      <input type="date" id="date" name="saleDate" min="2024-01-01" max="<%- new Date().toISOString().split('T')[0]%>" pattern="\d{2}/\d{2}/\d{4}" value="<%= new Date().toISOString().split('T')[0] %>" />
+      <input type="text" id="item" name="itemName" placeholder="Item name" />
+      <input type="number" id="minPrice" name="minPrice" min="0" step="100" placeholder="Minimum price" />
+      <input type="number" id="maxPrice" name="maxPrice" min="0" step="100" placeholder="Maximum price" />
+      <button type="submit" value="Submit" id="formSubmit">Search</button>
+    </form>
+  </main>
+  <script src="js/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchForm = document.getElementById('searchForm');
+      const itemInput = document.getElementById('item');
+      const minPriceInput = document.getElementById('minPrice');
+      const maxPriceInput = document.getElementById('maxPrice');
+      const dateInput = document.getElementById('date');
+      const submitButton = document.getElementById('formSubmit');
+
+      function disableButton() {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Searching...';
+      }
+
+      function enableButton() {
+        submitButton.textContent = 'Search';
+        submitButton.disabled = false;
+      }
+
+      function displayError(errorMessage, parentElement) {
+        const errDiv = document.createElement("div");
+        errDiv.innerHTML = `
+      <div class="errDiv">
+        <p>${errorMessage}</p>
+      </div>`;
+        parentElement.appendChild(errDiv);
+        errDiv.scrollIntoView({
+          behavior: "smooth"
+        });
+
+        setTimeout(() => {
+          errDiv.style.opacity = "0";
+          errDiv.style.transition = "all 1s ease-in-out";
+          setTimeout(() => {
+            errDiv.remove();
+          }, 1000);
+        }, 5000);
+      }
+
+      function containsNonText(input) {
+        let regex = /[^a-zA-Z\s]/;
+        return regex.test(input);
+      }
+
+      searchForm.addEventListener('submit', function(event) {
+        disableButton();
+        // Check if all inputs are empty
+        if (!itemInput.value && !minPriceInput.value && !maxPriceInput.value && !dateInput.value) {
+          event.preventDefault();
+          displayError('At least one input must be filled.', searchForm);
+          enableButton();
+          return;
+        }
+
+        // Validate item name
+        if (containsNonText(itemInput.value.trim())) {
+          event.preventDefault();
+          displayError('Item name should be text.', searchForm);
+          itemInput.setAttribute('aria-invalid', 'true');
+          itemInput.style.border = "2px solid red";
+          enableButton();
+          return;
+        } else {
+          itemInput.setAttribute('aria-invalid', 'false');
+          itemInput.style.border = "2px solid green";
+        }
+
+        // Validate minPriceInput and maxPriceInput
+        if (minPriceInput.value !== "" && maxPriceInput.value !== "") {
+          if (parseFloat(minPriceInput.value) >= parseFloat(maxPriceInput.value)) {
+            event.preventDefault();
+            displayError("Maximum price should be greater than minimum!", searchForm);
+            enableButton();
+            maxPriceInput.style.border = "2px solid red";
+            maxPriceInput.setAttribute("aria-invalid", true);
+          } else {
+            minPriceInput.style.border = "2px solid green";
+            minPriceInput.setAttribute("aria-invalid", false);
+            maxPriceInput.style.border = "2px solid green";
+            maxPriceInput.setAttribute("aria-invalid", false);
+          }
+        } else if (minPriceInput.value || maxPriceInput.value) {
+          if (minPriceInput.value <= 0 && maxPriceInput.value === "") {
+            event.preventDefault();
+            displayError("Minimum price should be greater than zero.", searchForm);
+            minPriceInput.style.border = "2px solid red";
+            minPriceInput.setAttribute("aria-invalid", true);
+            enableButton()
+          } else {
+            minPriceInput.setAttribute("aria-invalid", false);
+            minPriceInput.style.border = "2px solid green";
+          }
+          if (maxPriceInput.value <= 0 && minPriceInput.value === "") {
+            event.preventDefault();
+            displayError("Maximum price should be greater than zero.", searchForm);
+            maxPriceInput.style.border = "2px solid red";
+            maxPriceInput.setAttribute("aria-invalid", true);
+            enableButton()
+          } else {
+            maxPriceInput.setAttribute("aria-invalid", false);
+            maxPriceInput.style.border = "2px solid green";
+          }
+        }
+      });
+    });
+  </script>
+</body>
+<footer><%- include('../partials/footer')%></footer>
+
+</html>

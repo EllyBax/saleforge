@@ -1,0 +1,27 @@
+<div class="logo">
+  <button class="menuButton" id="menuButton">
+    <i class='bx bx-menu'></i>
+  </button>
+  <div class="navLinks" id="navLinks">
+    <% links.forEach(link=>{ %>
+    <a href="<%= link.page %>" class="link" style="margin-right: 35px;">
+      <%= link.text%>
+      <i class="bx <%= link.icon%> icon"></i>
+    </a>
+    <% }) %>
+  </div>
+  <h1>SaleForge</h1>
+</div>
+<div class="themes">
+  <button class="toggleThemes">
+    <i class="bx bx-adjust icon"></i>
+    <i class="bx bx-chevron-down icon" id="chevy" style="transition: all .5s ease-in;"></i>
+  </button>
+  <div class="themeCategories">
+    <button class="ThemeIcon" id="auto"><i class='bx bx-desktop'></i>Auto</button>
+    <hr>
+    <button class="ThemeIcon" id="light"><i class='bx bx-sun'></i> Light</button>
+    <hr>
+    <button class="ThemeIcon" id="dark"><i class='bx bx-moon'></i> Dark</button>
+  </div>
+</div>

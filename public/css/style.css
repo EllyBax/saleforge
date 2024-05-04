@@ -1,0 +1,780 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.cdnfonts.com/css/inter");
+@media (prefers-color-scheme: dark) {
+  /* :root {
+    --main-bg: #0f1733;
+    --second-bg: #1b1d3d;
+    --third-bg: #1f2355;
+    --clear-bg: #0f1733be;
+    --main-text: #eeeeee;
+    --second-text: #cbcbcb;
+    --warning-bg: #f44336;
+    --success-bg: #0da424;
+    --primary-bg: #3936f4;
+  } */
+
+  :root {
+    --main-bg: #131720;
+    --second-bg: #242c3a;
+    --third-bg: #0c0e14;
+    --clear-bg: #2d3748be;
+    --main-text: #edf2f7;
+    --second-text: #f2f3f4;
+    --warning-bg: #f44336;
+    --success-bg: #0da424;
+    --primary-bg: #3936f4;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  /* :root {
+    --main-bg: #e8e9c2;
+    --second-bg: #d9dbbb;
+    --third-bg: #898f50;
+    --clear-bg: #e8e9c291;
+    --main-text: #0f1733;
+    --second-text: #1b1d3d;
+    --warning-bg: #f44336;
+    --success-bg: #0da424;
+    --primary-bg: #413fd5;
+  } */
+
+  :root {
+    --main-bg: #ffffff;
+    --second-bg: #edf2f7;
+    --third-bg: #cbd5e0;
+    --clear-bg: #e2e8f0ab;
+    --main-text: #0f1733;
+    --second-text: #1b1d3d;
+    --warning-bg: #f44336;
+    --success-bg: #0da424;
+    --primary-bg: #413fd5;
+  }
+}
+
+.light {
+  --main-bg: #ffffff;
+  --second-bg: #edf2f7;
+  --third-bg: #cbd5e0;
+  --clear-bg: #e2e8f0ab;
+  --main-text: #0f1733;
+  --second-text: #1b1d3d;
+  --warning-bg: #f44336;
+  --success-bg: #0da424;
+  --primary-bg: #413fd5;
+  /* --main-bg: #e8e9c2;
+  --second-bg: #d9dbbb;
+  --third-bg: #898f50;
+  --clear-bg: #e8e9c291;
+  --main-text: #0f1733;
+  --second-text: #1b1d3d;
+  --warning-bg: #f44336;
+  --success-bg: #0da424;
+  --primary-bg: #413fd5; */
+}
+
+.dark {
+  --main-bg: #131720;
+  --second-bg: #242c3a;
+  --third-bg: #0c0e14;
+  --clear-bg: #2d3748be;
+  --main-text: #edf2f7;
+  --second-text: #f2f3f4;
+  --warning-bg: #f44336;
+  --success-bg: #0da424;
+  --primary-bg: #3936f4;
+  /* --main-bg: #0f1733;
+  --second-bg: #1b1d3d;
+  --third-bg: #1f2355;
+  --clear-bg: #0f1733be;
+  --main-text: #eeeeee;
+  --second-text: #cbcbcb;
+  --warning-bg: #f44336;
+  --success-bg: #0da424;
+  --primary-bg: #3936f4; */
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background: var(--main-bg);
+  font-family: "Inter", sans-serif;
+  color: var(--main-text);
+}
+
+header {
+  position: fixed;
+  width: calc(100% - 3rem);
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  top: 0;
+  box-shadow: 0 0 4px var(--third-bg);
+  background: var(--clear-bg);
+  padding: 0 1.5rem;
+  backdrop-filter: blur(3px);
+  transition: all 1s ease;
+  z-index: 1000;
+}
+
+main {
+  margin-top: 6rem;
+}
+
+.user {
+  background: var(--second-bg);
+  padding: 1rem 0;
+  margin: 1rem auto;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 60vw;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  width: 50%;
+}
+
+.menuButton {
+  border: none;
+  background: none;
+  color: var(--main-text);
+  font-size: 1.8rem;
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.navLinks {
+  display: none; /* Hide the navigation links by default */
+  position: absolute; /* Position the links below the menu button */
+  height: max-content;
+  width: fit-content;
+  top: 100%;
+  left: 0;
+  padding: 1rem 2rem;
+  opacity: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.navLinks.show {
+  opacity: 1;
+  display: grid;
+  place-items: center;
+  background: var(--main-bg);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border: 1px solid var(--main-text);
+  color: var(--main-text);
+  width: calc(100% - 3rem);
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin: 0.3rem auto;
+}
+
+.link:hover {
+  background: var(--third-bg);
+}
+
+.themes {
+  position: relative;
+  height: max-content;
+  width: max-content;
+}
+
+.toggleThemes,
+.Button1,
+.Button2 {
+  all: unset;
+  border: 2px solid var(--second-bg);
+  color: var(--main-text);
+  padding: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 1s ease-in-out;
+}
+
+.Button1 {
+  text-transform: uppercase;
+  background: var(--clear-bg);
+}
+
+.Button2 {
+  text-transform: uppercase;
+  padding: 0.4rem 0.5rem;
+  background: var(--third-bg);
+}
+
+.toggleThemes {
+  background: var(--clear-bg);
+  border-radius: 30px;
+  padding: 0.5rem 0.7rem;
+  width: 3rem;
+}
+
+.toggleThemes:hover,
+.Button1:hover,
+.Button2:hover {
+  background-color: var(--second-text);
+  color: var(--second-bg);
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.themeCategories {
+  position: absolute;
+  min-width: 4rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  box-shadow: 1px 1px 3px var(--third-bg);
+  backdrop-filter: blur(2px);
+  transition: all 0.5s ease-in-out;
+  padding: 0.3rem 1rem;
+  right: 0;
+}
+
+.themeCategories:hover {
+  background: var(--clear-bg);
+}
+
+.ThemeIcon {
+  display: block;
+  all: unset;
+  padding: 0.4rem;
+  border: 2px solid var(--main-text);
+  width: calc(100% - 0.8rem);
+  border-radius: 5px;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 1s ease-in-out;
+}
+
+.ThemeIcon:hover {
+  background-color: var(--second-text);
+  color: var(--second-bg);
+}
+
+/* LOADING */
+
+.loading {
+  display: flex;
+  background-color: var(--success-bg);
+  color: #eee;
+  padding: 1rem;
+  position: absolute;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.434);
+  top: 2rem;
+  right: 2rem;
+  z-index: 3000;
+}
+
+.spinner {
+  margin-right: 5px;
+  height: 1rem;
+  width: 1rem;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  border-top-color: orange;
+  animation: loading 1s linear infinite;
+}
+@keyframes loading {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* END of Loading Styles */
+
+.error {
+  background: var(--warning-bg);
+  padding: 0.2rem 1rem;
+  border-radius: 8px;
+  margin: 10px auto;
+  max-width: 300px;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.error button {
+  all: unset;
+  color: var(--main-text);
+  cursor: pointer;
+  font-size: 2.5rem;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.success {
+  background: var(--success-bg);
+  padding: 0.2rem 1rem;
+  border-radius: 8px;
+  margin: 10px auto;
+  max-width: 300px;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.success button {
+  all: unset;
+  color: var(--warning-bg);
+  cursor: pointer;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+.success p,
+.error p {
+  font-weight: bold;
+}
+
+.errDiv {
+  margin: 0 auto;
+  padding: 0.4rem;
+  background-color: var(--warning-bg);
+  text-align: center;
+  max-width: 70%;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  bottom: 2rem;
+  left: 1rem;
+  z-index: 1000;
+}
+
+.successDiv {
+  margin: 0 auto;
+  padding: 0.4rem;
+  background-color: var(--success-bg);
+  text-align: center;
+  max-width: 70%;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1000;
+}
+
+table {
+  background: var(--main-bg);
+  margin: 1rem auto;
+  box-shadow: 4px 2px 2px rgba(0, 0, 0, 0.1);
+  color: var(--main-text);
+  width: 60%;
+}
+
+th,
+td {
+  border: 2px solid transparent;
+  height: 30px;
+}
+
+th {
+  transition: all 0.4s ease;
+  background: var(--second-bg);
+}
+
+td {
+  background: var(--third-bg);
+  transition: all 0.5s ease-in-out;
+  text-align: start;
+}
+
+td:hover,
+th:hover {
+  background: var(--second-text);
+  cursor: pointer;
+  color: var(--main-bg);
+}
+
+.fabButton {
+  background-color: var(--third-bg);
+  color: var(--main-text);
+  border: none;
+  border-radius: 10px;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  box-shadow: 0 0 3px;
+  cursor: pointer;
+  z-index: 3000;
+  transition: all 0.5s ease-in-out;
+}
+
+.fabButton:hover {
+  background: var(--clear-bg);
+}
+
+.actions {
+  display: none;
+}
+
+.actions.show {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  box-shadow: 1px 1px 3px var(--third-bg);
+  backdrop-filter: blur(2px);
+  border: 0.1px solid var(--main-bg);
+  border-radius: 3px;
+  height: 150px;
+  width: 150px;
+  transition: all 1s ease-in-out;
+}
+
+.actions.show:hover {
+  background: var(--clear-bg);
+}
+
+.salesActions {
+  position: fixed;
+  text-align: end;
+  bottom: 3.2rem;
+  right: 1rem;
+}
+
+footer {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3rem;
+  background: var(--main-bg);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  table {
+    width: 95%;
+    margin: 1rem auto;
+  }
+
+  th,
+  td {
+    border: 2px solid transparent;
+    padding: 0 0.2rem;
+  }
+
+  .user {
+    max-width: 80vw;
+  }
+}
+/* End of general styles */
+
+/* Index EJS styles */
+.welcome-text {
+  height: 40vh;
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--second-bg);
+  color: var(--main-text);
+  border-radius: 5px;
+}
+
+.welcome-text h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.welcome-text p {
+  font-size: 1.2rem;
+}
+
+.welcome-text a {
+  color: var(--main-text);
+}
+
+.social-platforms {
+  height: max-content;
+  text-align: center;
+  background: var(--main-bg);
+  padding: 3rem;
+}
+
+.social-platforms h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.social-platforms a {
+  display: inline-block;
+  margin: 0 0.5rem;
+  font-size: 2rem;
+  color: var(--main-text);
+  transition: color 0.3s;
+}
+
+.social-platforms a:hover {
+  color: var(--success-bg);
+}
+/* End of index EJS styles */
+
+/* Sign up EJS styles */
+
+form input,
+textarea {
+  color: var(--main-text);
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+/* For Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Optional: For Internet Explorer 10+ */
+input[type="number"]::-ms-thumb {
+  -ms-appearance: none;
+}
+
+.registerForm {
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  background: var(--second-bg);
+  height: max-content;
+  width: 500px;
+}
+
+.formcheck {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--second-bg);
+  box-shadow: 0 0px 4px rgba(0, 0, 0, 0.21);
+  margin: 0.3rem auto;
+  width: calc(100% - 2rem);
+  padding: 0.5rem 0;
+  border-radius: 4px;
+}
+
+.formcheck label {
+  margin-bottom: 0.5rem;
+  text-align: start;
+  margin-left: 2rem;
+}
+
+.formcheck input,
+.formcheck textarea {
+  border: none;
+  background-color: var(--third-bg);
+  margin: 0 auto;
+  padding: 0.5rem;
+  border-radius: 4px;
+  width: calc(100% - 4rem);
+}
+.formLinks button,
+.button404 {
+  all: unset;
+  color: var(--third-bg);
+  background: var(--main-text);
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.4s ease;
+}
+
+.formLinks button:hover,
+.button404:hover {
+  background: var(--third-bg);
+  color: var(--main-text);
+}
+
+.formLinks a {
+  color: var(--second-text);
+}
+
+/* End of Sign Up EJS styles */
+
+/* Login EJS styles */
+
+.loginForm {
+  padding: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  background: var(--second-bg);
+  height: max-content;
+  width: 500px;
+}
+
+@media (max-width: 500px) {
+  .registerForm,
+  .loginForm {
+    width: 90vw;
+    margin: 0 auto;
+  }
+}
+/* End of Login EJS styles */
+
+/* Coming Soon Page */
+
+.coming-soon {
+  text-align: center;
+  padding: 1rem;
+  background: var(--second-bg);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.coming-soon a {
+  background: var(--third-bg);
+  text-decoration: none;
+  color: var(--main-text);
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.coming-soon a:hover {
+  background: var(--main-bg);
+}
+
+/* Coming soon end */
+
+/* Sales EJS page */
+.entryForm,
+.deleteForm {
+  max-width: 90vw;
+  min-height: 200px;
+  padding: 1rem;
+  margin: 1rem auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: var(--third-bg);
+  border-radius: 2px;
+  display: none;
+}
+
+.entryForm.show,
+.deleteForm.show {
+  position: relative;
+  display: grid;
+}
+
+.deleteForm {
+  min-height: 100px;
+}
+.entryForm input,
+.deleteForm input {
+  margin: 10px auto;
+  width: 80%;
+  background: var(--clear-bg);
+  border: none;
+  border-radius: 4px;
+  padding: 0.7rem;
+}
+
+.addSale,
+.deleteSale,
+.setupButton {
+  all: unset;
+  font-weight: bold;
+  padding: 1rem;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: max-content;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.setupButton {
+  background-color: var(--success-bg);
+}
+
+.addSale {
+  background-color: var(--primary-bg);
+}
+
+.deleteSale {
+  background: var(--warning-bg);
+}
+
+.closeButton {
+  position: absolute;
+  color: var(--main-text);
+  top: 0;
+  right: 5px;
+  background: none;
+  border: none;
+  font-size: 25px;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+
+.closeButton:hover {
+  color: red;
+}
+
+@media (min-width: 900px) {
+  .entryForm,
+  .deleteForm {
+    max-width: 60vw;
+  }
+}
+/* Sales EJS end */
+
+/* SETUP EJS */
+.dialog {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.dialog-content {
+  text-align: start;
+  background-color: var(--main-bg);
+  margin: 15% auto; /* 15% from the top and centered */
+  overflow-x: scroll;
+  padding: 1rem;
+  border: 1px solid #b4b4b4;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+/* End of SETUP EJS */

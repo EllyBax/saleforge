@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Success</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main style="text-align: center;">
+    <% if (status === 200) { %>
+    <h1>Registration Successful</h1>
+    <p>Your account has been successfully created. Welcome, <%= username %>!</p>
+    <button class="addSale" onclick="window.location.href = `/setup`">Get Started</button>
+    <% } else { %>
+    <h1>Registration Failed</h1>
+    <p>An error occurred during registration. Please try again.</p>
+    <button class="deleteSale" onclick="window.location.href = `/signUp`">SIGN UP</button>
+    <% } %>
+  </main>
+</body>
+
+</html>

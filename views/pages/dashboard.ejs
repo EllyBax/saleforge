@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    main {
+      position: relative;
+      margin: 0 auto;
+      min-height: 80vh;
+    }
+
+    .hero {
+      margin: 6rem auto 0;
+      background: var(--second-bg);
+      max-width: 90%;
+      padding: .5rem;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      justify-content: space-evenly;
+    }
+
+    .flexbox {
+      margin: 2rem auto;
+      max-width: 80%;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 1rem;
+    }
+
+    .action {
+      background-color: var(--second-bg);
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      transition: box-shadow .1s ease-in-out;
+    }
+
+    .action img {
+      height: 80%;
+      width: 100%;
+      margin-bottom: 10px;
+      background: none;
+    }
+
+    .action a{
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .action:hover {
+      box-shadow: 0 2px 4px var(--third-bg);
+    }
+
+    /* Media query for screens smaller than 768px (typical breakpoint for tablets) */
+    @media (max-width: 767px) {
+      .flexbox {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* Media query for screens smaller than 576px (typical breakpoint for mobile phones) */
+    @media (max-width: 575px) {
+      .flexbox {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Media query for screens smaller than 480px (extra small devices) */
+    @media (max-width: 479px) {
+      .flexbox {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+  <title>Dashboard | SaleForge</title>
+</head>
+
+<body>
+  <header id="header">
+    <%- include('../partials/header')%>
+  </header>
+  <div class="hero">
+    <h3>Welcome to the Dashboard!</h3>
+    <button><i class="bx bx-search icon"></i></button>
+  </div>
+  <main id="main">
+    <div class="flexbox">
+      <div class="add-items action">
+        <img src="images/list.png" alt="">
+        <a href="/sales">Record Sales</a>
+      </div>
+      <div class="view-stock action">
+        <img src="images/stock-market.png" alt="">
+        <a href="/inventory">View Stock</a>
+      </div>
+      <div class="categories-and-tags action">
+        <img src="images/price-tag.png" alt="">
+        <a href="/inventory#categories">Categories & Tags</a>
+      </div>
+      <div class="alerts action">
+        <img src="images/expired.png" alt="">
+        <a href="/notifications">Alerts</a>
+      </div>
+      <div class="report action">
+        <img src="images/analytics.png" alt="">
+        <a href="/report">Report</a>
+      </div>
+      <div class="orders action">
+        <img src="images/truck.png" alt="">
+        <a href="/orders">Orders</a>
+      </div>
+      <div class="customers action">
+        <img src="images/best-customer-experience.png" alt="">
+        <a href="/customers">Customers</a>
+      </div>
+      <div class="integration action">
+        <img src="images/distributed.png" alt="">
+        <a href="/integration">Integration</a>
+      </div>
+    </div>
+  </main>
+  <script src="js/index.js"></script>
+</body>
+<footer>
+  <%- include('../partials/footer')%>
+</footer>
+
+</html>

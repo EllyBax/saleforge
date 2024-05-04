@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      width: 100vw;
+    }
+    main{
+      margin-top: 5rem;
+    }
+  </style>
+  <title>SaleForge | Home Page</title>
+</head>
+
+<body>
+  <header id="header">
+    <%- include('../partials/header'); %>
+  </header>
+  <main id="main">
+    <div class="welcome-text">
+      <h1>Welcome to SaleForge!</h1>
+      <p>We're delighted to have you here.</p>
+      <p> Start tracking your sales efficiently and effortlessly.<br><br> <a href="/signUp">Sign up</a> or <a href="/login">Login</a> to get started.</p>
+    </div>
+    <div class="social-platforms">
+      <h3>Follow us on social media for more updates:</h3>
+      <a href="https://www.facebook.com" target="_blank"><i class='bx bxl-facebook'></i></a>
+      <a href="https://www.twitter.com" target="_blank"><i class='bx bxl-twitter'></i></a>
+      <a href="https://www.instagram.com" target="_blank"><i class='bx bxl-instagram'></i></a>
+      <a href="https://www.github.com" target="_blank"><i class='bx bxl-github'></i></a><a
+        href="https://www.whatsapp.com" target="_blank"><i class='bx bxl-whatsapp'></i></a>
+    </div>
+  </main>
+  <footer>
+    <%- include('../partials/footer') %>
+  </footer>
+  <script src="js/index.js"></script>
+</body>
+
+</html>

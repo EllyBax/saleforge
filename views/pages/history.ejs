@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    main {
+      max-width: 768px;
+      margin: 6rem auto 0;
+      padding: 0 1rem 1rem 1rem;
+      height: 80vh;
+      overflow-y: scroll;
+    }
+
+    form {
+      max-width: 300px;
+      margin: 1rem auto;
+      background: var(--main-bg);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-container {
+      height: max-content;
+      width: 100%;
+      overflow-x: scroll;
+    }
+
+    input[type="date"],
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: var(--second-bg);
+      color: var(--main-text);
+      border: 2px solid var(--clear-bg);
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    td {
+      width: max-content;
+      text-align: center;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: var(--third-bg);
+      color: var(--second-text);
+      transition: all .5s ease-in-out;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background: var(--second-bg);
+    }
+  </style>
+  <title>History | SaleForge</title>
+</head>
+
+<body>
+  <header id="header">
+    <%- include('../partials/header')%>
+  </header>
+  <main id="main">
+
+    <% if(message !== null) {%>
+    <div style="text-align: center; background: var(--third-bg); padding: 1rem; max-width: 800px; border-radius: 4px; box-shadow: 0 2px 4px var(--second-bg);">
+      <h3><%= message%></h3>
+      <br>
+      <a href="/sales" style="color: var(--second-text); margin: 0 1rem;">Add Sales</a>
+      <a href="/search" style="color: var(--second-text); margin: 0 1rem;">Search again</a>
+    </div>
+    <%} else {%>
+    <% if(saleDate || itemName || minPrice || maxPrice){ %>
+    <h3 style="text-align: center;">
+      <% if(saleDate && itemName && minPrice && maxPrice) { %>
+      Sales Records for <%= saleDate %>, <%= itemName %>, price ranging from <%= minPrice %> to <%= maxPrice %>
+      <% } else if(saleDate && itemName) { %>
+      Sales Records for <%= saleDate %>, <%= itemName %>
+      <% } else if(itemName && (minPrice > maxPrice)) { %>
+      Sales Records for <%= itemName %> with price starting from<%= minPrice %>
+      <% } else if(itemName && minPrice === 0 && maxPrice) { %>
+      Sales Records for <%= itemName %> with price less than <%= maxPrice %>
+      <% } else if(saleDate && minPrice > 0 && maxPrice > 0) { %>
+      Sales Records for <%= saleDate %>, ranging from <%= minPrice %> to <%= maxPrice %>
+      <% } else if(itemName && minPrice && maxPrice) { %>
+      Sales Records for <%= itemName %>, price ranging from <%= minPrice %> to <%= maxPrice %>
+      <% } else if(saleDate) { %>
+      Sales Records for <%= saleDate %>
+      <% } else if(itemName) { %>
+      Sales Records for <%= itemName %>
+      <% } else if(minPrice && maxPrice) { %>
+      <% if(minPrice > maxPrice) { %>
+      Sales Records for items with price starting from<%= minPrice %>
+      <% } else if(maxPrice && minPrice === 0) { %>
+      Sales Records for items with price less than <%= maxPrice %>
+      <% } else { %>
+      Sales Records for items ranging from <%= minPrice %> to <%= maxPrice %>
+      <% } %>
+      <% } %>
+    </h3>
+    <% } %>
+
+    <div class="table-container">
+      <table id="table">
+        <tr>
+          <th>Entry</th>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Recorded</th>
+        </tr>
+        <% sales.forEach((sale, index)=> { %>
+        <tr>
+          <td>
+            <%= index + 1 %>
+          </td>
+          <td>
+            <%= sale.product %>
+          </td>
+          <td>
+            <%= sale.quantity %>
+          </td>
+          <td>
+            <%= sale.price %>
+          </td>
+          <td>
+            <%= sale.createdAt%>
+          </td>
+        </tr>
+        <% }) %>
+        <%}%>
+      </table>
+    </div>
+    <hr>
+    <button class="addSale" onclick="window.history.back()">BACK</button>
+    <button class="deleteSale" style="float: right;" onclick="window.location.href = `/`">HOME</button>
+
+  </main>
+  <script src="js/index.js"></script>
+
+</body>
+<footer>
+  <%- include('../partials/footer')%>
+        </footer>
+
+</html>

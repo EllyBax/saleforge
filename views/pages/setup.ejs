@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Your Account</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      overflow-y: scroll;
+    }
+
+    main {
+      margin: 0;
+    }
+
+    .loading {
+      display: flex;
+      background-color: var(--success-bg);
+      color: #eee;
+      padding: 1rem;
+      position: absolute;
+      border-radius: 3px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.434);
+      top: 2rem;
+      right: 2rem;
+    }
+
+    .spinner {
+      margin-right: 5px;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      border-top-color: orange;
+      animation: loading 1s linear infinite;
+    }
+
+    form {
+      width: 600px;
+      background-color: var(--second-bg);
+      padding: 1rem 0;
+      margin: 1rem auto;
+      border-radius: 3px;
+    }
+
+    a {
+      color: var(--main-text);
+    }
+
+    table {
+      width: 100%;
+      overflow-x: scroll;
+    }
+
+    th {
+      width: max-content;
+    }
+
+    @media (max-width: 648px) {
+      form {
+        width: 85vw;
+      }
+    }
+
+    @keyframes loading {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main style="text-align: center;" id="main">
+    <h1>Setup Your SaleForge Account</h1>
+    <!-- <a href="/login">Or skip for now!</a> -->
+    <form method="post" action="/saveSetup" id="setupForm">
+      <div class="formcheck">
+        <label for="businessName">Business Name</label>
+        <input type="text" id="businessName" name="businessName" placeholder="Business/User name" aria-placeholder="Business name is optional">
+      </div>
+      <div class="formcheck">
+        <label for="businessType">Business Type</label>
+        <input list="businessTypeList" type="text" id="businessType" name="businessType" placeholder="Select your business type" aria-placeholder="Enter your business type">
+        <datalist id="businessTypeList">
+          <option value="Retail">
+          <option value="Service">
+          <option value="Manufacturing">
+          <option value="Wholesale">
+          <option value="Agriculture">
+          <option value="Construction">
+          <option value="Technology">
+          <option value="Education">
+          <option value="Healthcare">
+        </datalist>
+      </div>
+      <div class="formcheck">
+        <label for="businessDescription">Business Description</label>
+        <textarea id="businessDescription" name="businessDescription" rows="2" placeholder="Describe your business" aria-placeholder="Provide a brief description of your business"></textarea>
+      </div>
+      <!-- <div class="formcheck">
+        <label for="product">Products / Services</label>
+        <input type="text" name="product" id="product" placeholder="e.g Sugar, Wheat, Flour" aria-placeholder="Enter products/services separated by commas">
+        <p style="font-style: italic; font-size:.8rem; color: #6b6a6a;">Enter at least three products/services separated by commas</p>
+      </div> -->
+      <button type="submit" class="setupButton" id="submitButton">Save</button>
+    </form>
+
+    <div id="confirmationDialog" class="dialog">
+      <div class="dialog-content">
+        <p style="text-align: center;">Is this correct?</p>
+        <table>
+          <tr>
+            <th>BUSINESS NAME: </th>
+            <td id="busName"></td>
+          </tr>
+          <tr>
+            <th>BUSINESS TYPE: </th>
+            <td id="busType"></td>
+          </tr>
+          <tr>
+            <th>DESCRIPTION: </th>
+            <td id="busDesc"></td>
+          </tr>
+        </table>
+        <button type="button" id="confirmSubmit" class="addSale">Yes, Save</button>
+        <button type="button" id="cancelSubmit" class="deleteSale" style="float: right;">No, Cancel</button>
+      </div>
+    </div>
+
+  </main>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loadingDiv = document.createElement("div")
+      const main = document.getElementById("main")
+      const businessNameInput = document.getElementById("businessName")
+      const businessTypeInput = document.getElementById("businessType")
+      const businessDescriptionInput = document.getElementById("businessDescription")
+      const businessName = document.getElementById("busName")
+      const businessType = document.getElementById("busType")
+      const businessDescription = document.getElementById("busDesc")
+      // const productInput = document.getElementById("product")
+      const setupForm = document.getElementById("setupForm")
+      const submitButton = document.getElementById("submitButton")
+
+      const inputs = [businessNameInput, businessTypeInput, businessDescriptionInput];
+
+      function disableButton() {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Saving..';
+      }
+
+      function enableButton() {
+        submitButton.textContent = 'Save';
+        submitButton.disabled = false;
+      }
+
+      function displayError(errorMessage, parentElement) {
+        const errDiv = document.createElement("div");
+        errDiv.innerHTML = `
+        <div class="errDiv">
+          <p>${errorMessage}</p>
+        </div>`;
+        parentElement.appendChild(errDiv);
+        errDiv.scrollIntoView({
+          behavior: "smooth"
+        });
+
+        setTimeout(() => {
+          errDiv.style.opacity = "0";
+          errDiv.style.transition = "all 1s ease-in-out";
+          setTimeout(() => {
+            errDiv.remove();
+          }, 1000);
+        }, 5000);
+      }
+
+      function containsNonText(input) {
+        let regex = /[^a-zA-Z\s']/;
+        return regex.test(input);
+      }
+
+      loadingDiv.innerHTML = `
+      <div class="loading">
+        <span class="spinner"></span>
+        Saving data..
+      </div>`
+
+      // form validation
+      setupForm.addEventListener("submit", event => {
+        disableButton()
+        // Check if all inputs are empty
+        if (inputs.some(input => input.value.trim() === "")) {
+          event.preventDefault();
+          displayError('All inputs must be filled.', setupForm);
+          enableButton();
+          // Iterate over the inputs array and apply styles to empty inputs
+          inputs.forEach(input => {
+            if (input.value.trim() === "") {
+              input.style.border = "2px solid red";
+              input.setAttribute("aria-invalid", "true");
+            } else {
+              input.style.border = "2px solid green";
+              input.setAttribute("aria-invalid", "false");
+            }
+          });
+          return;
+        }
+
+        businessDescription.textContent = businessDescriptionInput.value.trim();
+        // validate business name
+        if (containsNonText(businessNameInput.value.trim())) {
+          event.preventDefault()
+          displayError("Business Name Should be text", main)
+          enableButton()
+          businessNameInput.style.border = "2px solid red"
+          businessNameInput.setAttribute("aria-invalid", "true")
+          return;
+        } else {
+          businessName.textContent = businessNameInput.value.trim();
+          businessNameInput.style.border = "2px solid green"
+          businessNameInput.setAttribute("aria-invalid", "false")
+        }
+
+        if (containsNonText(businessTypeInput.value.trim())) {
+          event.preventDefault()
+          displayError("Business type should be text", main)
+          enableButton()
+          businessTypeInput.style.border = "2px solid red"
+          businessTypeInput.setAttribute("aria-invalid", "true")
+          return;
+        } else {
+          businessType.textContent = businessTypeInput.value.trim();
+          businessTypeInput.style.border = "2px solid green"
+          businessTypeInput.setAttribute("aria-invalid", "false")
+        }
+        event.preventDefault()
+        // Show the dialog
+        document.getElementById('confirmationDialog').style.display = 'block';
+        // Add an event listener to the confirm button
+        document.getElementById('confirmSubmit').addEventListener('click', function() {
+          main.appendChild(loadingDiv)
+          document.getElementById('confirmSubmit').disabled = true
+          document.getElementById('confirmSubmit').textContent = "Saving..."
+          document.getElementById('confirmationDialog').style.display = 'none';
+          setupForm.submit();
+        });
+
+        document.getElementById('cancelSubmit').addEventListener('click', function() {
+          // Hide the dialog without submitting
+          enableButton()
+          document.getElementById('confirmationDialog').style.display = 'none';
+        });
+      })
+    })
+  </script>
+</body>
+
+</html>
