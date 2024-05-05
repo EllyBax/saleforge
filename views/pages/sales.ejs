@@ -27,7 +27,8 @@
     }
 
     footer {
-      position: fixed;
+      position: relative;
+      background: none;
     }
   </style>
   <title>Sales | SaleForge</title>
@@ -39,9 +40,6 @@
   </header>
 
   <main id="main">
-    <div class="user">
-      <h4>Welcome, <%= username %></h4>
-    </div>
     <% if (messages.error) { %>
     <div class="errDiv" id="error">
       <button type="button" id="closeEntryForm" class="closeButton">
@@ -65,7 +63,7 @@
     <% if (sales.length === 0) { %>
     <p>You don't have any sale records for <span style="font-weight: bold;"> "<%= business%>"!</span></p>
     <p>Start recording sales now!</p><br>
-    <button class="addSale" id="addSale">ADD SALE</button>
+    <b>Use the menu below!</b>
     <% } else { %>
     <p>Here are your latest records for <span style="font-weight: bold;"> "<%= business%>"!</span></p>
     <table id="salesTable">
@@ -106,12 +104,9 @@
       <input type="text" placeholder="e.g., Sugar" aria-details="Enter sale name as it appears in the table" id="productToDelete" name="productToDelete" />
       <button type="submit" id="deleteFormButton" class="deleteSale">DELETE</button>
     </form>
-
-    <div class="functions">
-      <button class="addSale" id="addSale">ADD SALE</button>
-      <button class="deleteSale" id="deleteSale">DELETE SALE</button>
-    </div>
+    <%- include('../partials/fab')%>
   </main>
+  <script src="js/index.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const error = document.getElementById('error');
@@ -222,7 +217,7 @@
           priceInput.setAttribute('aria-invalid', 'false'); // Set aria-invalid to false
           priceInput.style.border = "2px solid green"; // Remove the red border if there's no error
         }
-        
+
         let message = "Recording Sale.."
         const loadingDiv = document.createElement("div");
         loadingDiv.innerHTML = `
@@ -268,38 +263,6 @@
       const deleteFormButton = document.getElementById("deleteFormButton");
       const productToDelete = document.getElementById("productToDelete");
 
-      deleteFormButton.textContent = "DELETE"
-
-      addSaleButton.addEventListener("click", () => {
-        entryForm.classList.toggle("show");
-        //scrollinto view of loaded element
-        entryForm.scrollIntoView({
-          behavior: "smooth"
-        });
-      });
-
-      deleteSaleButton.addEventListener("click", () => {
-        deleteForm.classList.toggle("show");
-        //scrollinto view of loaded element
-        deleteForm.scrollIntoView({
-          behavior: "smooth"
-        });
-      });
-
-      closeEntryForm.addEventListener("click", () => {
-        salesTable.scrollIntoView({
-          behavior: "smooth"
-        });
-        entryForm.classList.toggle("show");
-      });
-
-      closeButton.addEventListener("click", () => {
-        salesTable.scrollIntoView({
-          behavior: "smooth"
-        });
-        deleteForm.classList.toggle("show");
-      });
-
       deleteForm.addEventListener("submit", (event) => {
         deleteFormButton.disabled = true
         deleteFormButton.textContent = "Deleting..."
@@ -321,11 +284,12 @@
         </div>`;
 
         main.appendChild(loadingDiv)
+        loadingDiv.scrollIntoView({
+          behavior: "smooth"
+        })
       })
     })
   </script>
-  <script src="js/index.js"></script>
-
 </body>
 <footer>
   <%- include('../partials/footer')%>

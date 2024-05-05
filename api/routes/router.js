@@ -181,20 +181,16 @@ router.get("/sales", requireLogin, async (req, res) => {
 // Apply the rate limiter and validation middleware to the /register route
 router.post("/register", apiLimiter, async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(name, email, password);
 
   // Check if User exists
   try {
     const existingUser = await usersController.findExistingUser(email);
 
     if (existingUser) {
-      console.log("User with email exists!");
       req.flash("error", "User with this email exists!");
       return res.redirect("back");
     } else {
-      console.log("Email available");
       try {
-        console.log("creating user");
         const hashedPassword = await PasswordHandler.hashPassword(password);
         const user = await usersController.createUser(
           email,
@@ -227,9 +223,7 @@ router.post("/login", apiLimiter, async (req, res) => {
   // Check if User exists
   try {
     const existingUser = await usersController.findExistingUser(email);
-    console.log("checking user existence");
     if (!existingUser) {
-      console.log("User with email doesn't exist!");
       req.flash("error", "User with this email doesn't exist!");
       return res.redirect("back");
     } else {
@@ -239,7 +233,6 @@ router.post("/login", apiLimiter, async (req, res) => {
           existingUser.password
         );
         if (validPassword) {
-          console.log("correct password");
           const returnTo = req.session.returnTo || "/"; // Default to homepage if no returnTo is set
           delete req.session.returnTo; // Clear the returnTo from the session
           // get users businesses
@@ -252,7 +245,6 @@ router.post("/login", apiLimiter, async (req, res) => {
           req.session.businessName = usersBusiness.name;
           return res.redirect(returnTo);
         } else {
-          console.log("Incorrect Password");
           req.flash("error", "Incorrect Password");
           return res.redirect("back");
         }
@@ -281,12 +273,9 @@ router.post("/addSale", requireLogin, apiLimiter, async (req, res) => {
     businessId: req.session.businessId,
   };
 
-  console.log(saleDetails);
   try {
-    console.log("adding sale..");
     const newSale = await salesController.saleEntry(saleDetails);
     req.flash("success", "Sale added successfully");
-    console.log("Sale added successfully", newSale.item);
     return res.redirect("/sales");
   } catch (error) {
     console.log("Error: ", error);
@@ -383,7 +372,8 @@ router.post("/saveSetup", requireLogin, apiLimiter, async (req, res) => {
   };
 
   const newBusiness = await businessController.createBusiness(businessDetails);
-  console.log(newBusiness.name);
+  req.session.businessId = newBusiness.id
+  req.session.businessName = newBusiness.name
   return res.status(200).redirect("/");
 });
 

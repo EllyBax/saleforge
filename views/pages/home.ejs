@@ -10,7 +10,8 @@
     body {
       width: 100vw;
     }
-    main{
+
+    main {
       margin-top: 5rem;
     }
   </style>
@@ -23,7 +24,10 @@
   </header>
   <main id="main">
     <div class="welcome-text">
-      <h1>Welcome back <%= username %></h1>
+      <div class="user">
+        <h4>Welcome back, <%= username %></h4>
+      </div>
+      <!-- <h1>Welcome back <%= username %></h1> -->
       <p>We're glad to see you again. Feel free to continue <a href="/sales">recording</a>, or <a href="/history">view your records</a> from the menu.</p>
     </div>
     <div class="social-platforms">

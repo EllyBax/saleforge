@@ -46,16 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener("DOMContentLoaded", function () {
   const menuButton = document.getElementById("menuButton");
-  const menuIcon = document.querySelector(".bx-menu")
+  const menuIcon = document.querySelector(".bx-menu");
   const navLinks = document.getElementById("navLinks");
   const links = document.getElementsByClassName("link");
 
   menuButton.addEventListener("click", function () {
     navLinks.classList.toggle("show");
-    if(menuIcon.classList.contains("bx-menu")){
-      menuIcon.classList.replace("bx-menu", "bx-x")
-    } else{
-      menuIcon.classList.replace( "bx-x", "bx-menu");
+    if (menuIcon.classList.contains("bx-menu")) {
+      menuIcon.classList.replace("bx-menu", "bx-x");
+    } else {
+      menuIcon.classList.replace("bx-x", "bx-menu");
     }
   });
 
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-/*
+
 document.addEventListener("DOMContentLoaded", () => {
   //FabButton
   const fabButton = document.getElementById("fabButton");
@@ -116,4 +116,3 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteForm.classList.remove("show");
   });
 });
-*/
